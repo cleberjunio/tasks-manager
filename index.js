@@ -20,16 +20,13 @@ app.get("/tasks", async (req, res) => {
 });
 
 app.post("/tasks", async (req, res) => {
-    const newTask = new TaskModel(req.body);
-    await newTask.save();
-    res.status(201).send(newTask);
-    /*   try {
+    try {
         const newTask = new TaskModel(req.body);
         await newTask.save();
         res.status(201).send(newTask);
     } catch (err) {
         res.status(500).send(err);
-    } */
+    }
 });
 
 /* app.delete("/tasks/:id", async (req, res) => {
