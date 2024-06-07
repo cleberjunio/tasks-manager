@@ -14,8 +14,8 @@ app.get("/tasks", async (req, res) => {
     try {
         const tasks = await TaskModel.find({});
         res.status(200).send(tasks);
-    } catch (err) {
-        res.status(500).send(err);
+    } catch (error) {
+        res.status(500).send(error.message);
     }
 });
 
@@ -29,16 +29,24 @@ app.post("/tasks", async (req, res) => {
     }
 });
 
-/* app.delete("/tasks/:id", async (req, res) => {
-  
+app.delete("/tasks/:id", async (req, res) => {
+    try {
+        const taskId = req.params.id;
 
-    const taskId = req.params.id;
+        const taskDeleted = await TaskModel.findById(taskId);
 
-    const deletedTask = await TaskModel.findByIdAndDelete(taskId);
+        if (!taskDeleted) {
+            return res.status(500).send("Essa tarefa não foi encontrada!!");
+        }
 
-    res.status(200).send(deletedTask);
-}); */
+        const deletedTask = await TaskModel.findByIdAndDelete(taskId);
 
-app.listen(3000, () => {
-    console.log("Listening on port 3000...");
+        res.status(200).send(deletedTask);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
+app.listen(8001, () => {
+    console.log("Listening on port 8001...");
 });
