@@ -5,11 +5,11 @@ const TaskModel = require("../models/task.model");
 const TaskController = require("../controllers/task.controller");
 
 router.get("/", async (req, res) => {
-    return new TaskController(req, res).getTasks();
+    return new TaskController(req, res).getTasksAll();
 });
 
 router.post("/", async (req, res) => {
-    return new TaskController(req, res).postTasks();
+    return new TaskController(req, res).createTasks();
 });
 
 router.delete("/:id", async (req, res) => {
