@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-const TaskModel = require("../models/task.model");
 const TaskController = require("../controllers/task.controller");
 
 router.get("/", async (req, res) => {
