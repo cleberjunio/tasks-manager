@@ -1,6 +1,10 @@
 const TaskModel = require("../models/task.model");
-const { notFoundError } = require("../errors/mongodb.errors");
+const {
+    notFoundError,
+    objectIdCastError,
+} = require("../errors/mongodb.errors");
 const { notAllowedFieldsToUpdateError } = require("../errors/general.errors");
+const { default: mongoose } = require("mongoose");
 class TaskController {
     constructor(req, res) {
         this.req = req;
@@ -37,6 +41,9 @@ class TaskController {
             const deleteToTask = await TaskModel.findByIdAndDelete(taskId);
             return this.res.status(200).send(deleteToTask);
         } catch (error) {
+            if (error instanceof mongoose.Error.CastError) {
+                return objectIdCastError(this.res);
+            }
             this.res.status(500).send(error.message);
         }
     }
@@ -51,6 +58,9 @@ class TaskController {
             }
             return this.res.status(200).send(task);
         } catch (error) {
+            if (error instanceof mongoose.Error.CastError) {
+                return objectIdCastError(this.res);
+            }
             this.res.status(500).send(error.message);
         }
     }
@@ -86,6 +96,11 @@ class TaskController {
             await taskToUpdate.save();
             return this.res.status(200).send(taskToUpdate);
         } catch (error) {
+            /* Checando se error é uma instância de new monggose.Error.castError.
+            Para casos em que o id não foi passado corretamente e e não foi possível converter nosso id pra ObjectId */
+            if (error instanceof mongoose.Error.CastError) {
+                return objectIdCastError(this.res);
+            }
             return this.res.status(500).send(error.message);
         }
     }
