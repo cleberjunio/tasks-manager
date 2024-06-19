@@ -56,5 +56,40 @@ class TaskController {
             this.res.status(500).send(error.message);
         }
     }
+
+    async updateTasks() {
+        try {
+            const taskId = this.req.params.id;
+            const taskData = this.req.body;
+
+            /* pega a tarefa */
+            const taskToUpdate = await TaskModel.findById(taskId);
+
+            /* mapeando os campos permitidos para atualizar tarefa */
+            const allowedUpdates = ["isCompleted"];
+
+            /* pegou os campos que o usuário está querendo atualizar */
+            const requestUpdates = Object.keys(taskData);
+
+            /* pra cada campo que está sendo recebido no body verificar se a lista de campos permitidos pra atualizar 
+          inclui este campo.Se incluir(if) ,significa que este campo pode ser atualizado */
+
+            for (const update of requestUpdates) {
+                if (allowedUpdates.includes(update)) {
+                    taskToUpdate[update] = taskData[update];
+                } else {
+                    return this.res
+                        .status(400)
+                        .send(
+                            "Um ou mais campos inseridos não pode ser editados"
+                        );
+                }
+            }
+            await taskToUpdate.save();
+            return this.res.status(200).send(taskToUpdate);
+        } catch (error) {
+            return this.res.status(500).send(error.message);
+        }
+    }
 }
 module.exports = TaskController;
